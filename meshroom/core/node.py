@@ -516,8 +516,12 @@ class BaseNode(BaseObject):
     def getLabel(self):
         """
         Returns:
-            str: the high-level label of this node
+            str: the user-provided label if it exists, the high-level label of this node otherwise
         """
+        if self.hasInternalAttribute("label"):
+            label = self.internalAttribute("label").value.strip()
+            if label:
+                return label
         return self.nameToLabel(self._name)
 
     @Slot(str, result=str)
@@ -819,6 +823,9 @@ class BaseNode(BaseObject):
         if self.internalFolder != folder:
             self.internalFolderChanged.emit()
 
+    def updateInternalAttributes(self):
+        self.internalAttributesChanged.emit()
+
     @property
     def internalFolder(self):
         return self._internalFolder.format(**self._cmdVars)
@@ -1052,6 +1059,7 @@ class BaseNode(BaseObject):
     y = Property(float, lambda self: self._position.y, notify=positionChanged)
     attributes = Property(BaseObject, getAttributes, constant=True)
     internalAttributes = Property(BaseObject, getInternalAttributes, constant=True)
+    internalAttributesChanged = Signal()
     internalFolderChanged = Signal()
     internalFolder = Property(str, internalFolder.fget, notify=internalFolderChanged)
     depthChanged = Signal()
