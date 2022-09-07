@@ -31,6 +31,8 @@ Item {
     readonly property color defaultColor: isCompatibilityNode ? "#444" : activePalette.base
     property color baseColor: defaultColor
 
+    property point mousePosition
+
     Item {
         id: m
         property bool displayParams: false
@@ -108,6 +110,7 @@ Item {
         drag.threshold: 2
         hoverEnabled: true
         acceptedButtons: Qt.LeftButton | Qt.RightButton
+        onPositionChanged: root.mousePosition = mapToItem(mouseArea, mouseArea.mouseX, mouseArea.mouseY)
         onPressed: root.pressed(mouse)
         onDoubleClicked: root.doubleClicked(mouse)
         onEntered: root.entered()
